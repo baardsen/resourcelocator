@@ -1,4 +1,4 @@
-package main
+package resourcelocator
 
 import (
 	"os"
@@ -10,10 +10,6 @@ import (
 var embeddedFiles = make(map[string] []byte)
 func SetEmbeddedFiles(newMap map[string] []byte) {
 	embeddedFiles = newMap
-}
-
-func main() {
-	CreateEmbeddedLocator("embeddedFiles.go", "main", "resources")
 }
 
 func Locate(path string) []byte {
