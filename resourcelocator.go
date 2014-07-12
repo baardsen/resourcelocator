@@ -1,14 +1,15 @@
 package resourcelocator
 
 import (
-	"os"
 	"bytes"
 	"fmt"
 	"io"
+	"os"
 )
 
-var embeddedFiles = make(map[string] []byte)
-func SetEmbeddedFiles(newMap map[string] []byte) {
+var embeddedFiles = make(map[string][]byte)
+
+func SetEmbeddedFiles(newMap map[string][]byte) {
 	embeddedFiles = newMap
 }
 
@@ -27,7 +28,7 @@ func locateExternal(path string) []byte {
 		panic(err)
 	}
 	defer file.Close()
-	
+
 	b := new(bytes.Buffer)
 	b.ReadFrom(file)
 	return b.Bytes()
@@ -42,9 +43,9 @@ func CreateEmbeddedLocator(fileName, packageName, resourceDir string) {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	appendHeader(file, packageName)
-	defer func(f *os.File){
+	defer func(f *os.File) {
 		appendFooter(f)
 		f.Close()
 	}(file)
@@ -66,18 +67,18 @@ func appendFooter(writer io.Writer) {
 
 func processFile(writer io.Writer, path string, info os.FileInfo) {
 	file, err := os.Open(path)
-	if err!= nil {
+	if err != nil {
 		fmt.Printf("Error opening %s: %+v\n", path, err)
 		return
 	}
 	defer file.Close()
-	
+
 	if info.IsDir() {
-		files, _ :=file.Readdir(0)
+		files, _ := file.Readdir(0)
 		for _, f := range files {
-			processFile(writer, path + "/" + f.Name(), f)
+			processFile(writer, path+"/"+f.Name(), f)
 		}
-		return	
+		return
 	}
 	slice := make([]byte, info.Size())
 	_, err = file.Read(slice)
